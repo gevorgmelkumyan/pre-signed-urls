@@ -1,0 +1,42 @@
+version: '3.7'
+name: signed_urls
+networks:
+    net:
+        driver: bridge
+services:
+    server:
+        build:
+            context: ./server
+            dockerfile: Dockerfile
+        image: server
+        container_name: su_server
+        ports:
+            - ${SERVER_PORT}:80
+        volumes:
+            - ../:/var/www/html
+        networks:
+            - net
+        depends_on:
+            - mysql
+    mysql:
+        container_name: su_mysql
+        image: mysql:8
+        command: --max_allowed_packet=92505856
+        networks:
+            - net
+        ports:
+            - ${DB_PORT}:3306
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_PASSWORD: ${DB_USERNAME}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - ./data/mysql:/var/lib/mysql
+    s3mock:
+        image: adobe/s3mock
+        container_name: su_s3
+        environment:
+            - initialBuckets=su
+            - debug=true
+        ports:
+            - ${S3_PORT}:9090
