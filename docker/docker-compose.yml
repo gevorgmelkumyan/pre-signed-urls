@@ -12,6 +12,7 @@ services:
         container_name: su_server
         ports:
             - ${SERVER_PORT}:80
+            - 5173:5173
         volumes:
             - ../:/var/www/html
         networks:
