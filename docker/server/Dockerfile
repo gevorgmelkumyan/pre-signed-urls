@@ -46,4 +46,6 @@ COPY ./mods-available/xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug
 COPY ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
 
+EXPOSE 5173
+
 ENTRYPOINT ["docker-entrypoint"]

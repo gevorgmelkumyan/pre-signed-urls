@@ -36,6 +36,8 @@ services:
     s3mock:
         image: adobe/s3mock
         container_name: su_s3
+        networks:
+            - net
         environment:
             - initialBuckets=su
             - debug=true
