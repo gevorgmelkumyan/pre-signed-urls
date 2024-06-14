@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class File
@@ -31,4 +32,12 @@ class File extends Model {
         'created_at',
         'updated_at',
     ];
+
+    protected $appends = [
+        'url',
+    ];
+
+    public function getUrlAttribute(): ?string {
+        return $this->path ? Storage::temporaryUrl($this->path, now()->addMinutes(30)) : null;
+    }
 }
