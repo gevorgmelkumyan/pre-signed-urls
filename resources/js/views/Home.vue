@@ -79,12 +79,19 @@ const fileSent = () => {
 		})
 		.then(response => {
 			loadingButton.value = false
-			getFiles()
+			reset()
 		})
 		.catch(error => {
 			loadingButton.value = false
 			console.error(error)
 		})
+}
+
+const reset = () => {
+	presignedUrl.value = null
+	file.value = 0
+	fileId.value = null
+	getFiles()
 }
 
 </script>
@@ -93,12 +100,29 @@ const fileSent = () => {
     <h1 class="text-center">Presigned URL File Upload</h1>
     <v-container class="mt-5">
         <v-row>
-            <v-col cols="12">
-                <v-file-input label="Drop file here" @change="fileUploaded" />
-                <v-btn @click="uploadToS3" color="primary" :loading="loadingButton">Upload</v-btn>
-                <p v-if="presignedUrl" class="mt-4">Presigned URL: {{ presignedUrl }}</p>
+            <v-col cols="8">
+                <v-file-input
+	                label="Drop file here"
+	                @change="fileUploaded"
+                />
             </v-col>
+	        <v-col cols="4">
+		        <v-btn
+			        @click="uploadToS3"
+			        color="primary"
+			        :loading="loadingButton"
+			        :disabled="!presignedUrl"
+		        >
+			        Upload
+		        </v-btn>
+	        </v-col>
         </v-row>
+
+	    <v-row v-if="presignedUrl">
+		    <v-col cols="12">
+			    <p class="mt-4">Presigned URL: {{ presignedUrl }}</p>
+		    </v-col>
+	    </v-row>
 
         <v-row class="mt-5">
 	        <v-skeleton-loader :loading="loading" type="table">
@@ -111,6 +135,9 @@ const fileSent = () => {
 					        </th>
 					        <th class="text-left">
 						        Status
+					        </th>
+					        <th class="text-left">
+						        Date
 					        </th>
 					        <th class="text-left">
 						        Path in S3
@@ -134,14 +161,28 @@ const fileSent = () => {
 							        UPLOADING
 						        </v-chip>
 						        <v-chip
-							        v-else
+							        v-else-if="file.status === 'uploaded'"
 							        color="green"
 						        >
 							        UPLOADED
 						        </v-chip>
+						        <v-chip
+							        v-else
+							        color="red"
+						        >
+							        FAILED
+						        </v-chip>
 					        </td>
+					        <td>{{ file.date }}</td>
 					        <td>{{ file.path }}</td>
-					        <td><a :href="file.url" target="_blank">Download</a></td>
+					        <td>
+						        <a v-if="file.status === 'uploaded'" :href="file.url" target="_blank">
+							        Download
+						        </a>
+						        <template v-else>
+							        -
+						        </template>
+					        </td>
 				        </tr>
 				        </tbody>
 			        </v-table>
