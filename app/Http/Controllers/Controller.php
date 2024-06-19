@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\PreSignedUrlRequest;
+use App\Http\Requests\UpdateFileStatusRequest;
 use App\Models\File;
 use Aws\S3\S3Client;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
@@ -52,8 +53,8 @@ class Controller extends BaseController {
         ]);
     }
 
-    public function fileUploaded(File $file): JsonResponse {
-        $file->update(['status' => File::STATUS_UPLOADED]);
+    public function updateFileStatus(File $file, UpdateFileStatusRequest $request): JsonResponse {
+        $file->update(['status' => $request->status]);
 
         return $this->respond($file);
     }

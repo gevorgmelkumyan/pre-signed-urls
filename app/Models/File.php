@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Storage;
 class File extends Model {
     use HasFactory;
 
-    const STATUS_UPLOADING = 'uploading';
+    const STATUS_CREATED = 'created';
     const STATUS_UPLOADED = 'uploaded';
     const STATUS_FAILED = 'failed';
 

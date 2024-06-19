@@ -12,6 +12,8 @@ const uploadedFiles = ref([])
 const file = ref(0)
 const fileId = ref(null)
 
+const files = ref([])
+
 onBeforeMount(() => {
 	getFiles()
 })
@@ -63,19 +65,20 @@ const uploadToS3 = () => {
 		})
 		.then(response => {
 			loadingButton.value = false
-			fileSent()
+			fileSent('uploaded')
 		})
 		.catch(error => {
 			loadingButton.value = false
-			console.error(error)
+            fileSent('failed')
+            console.error(error)
 		})
 }
 
-const fileSent = () => {
+const fileSent = (status) => {
 	loadingButton.value = true
 	axios
-		.put(`/api/files/${fileId.value}/uploaded`, {
-			file_id: fileId.value
+		.put(`/api/files/${fileId.value}/update-file-status`, {
+            status
 		})
 		.then(response => {
 			loadingButton.value = false
@@ -91,6 +94,7 @@ const reset = () => {
 	presignedUrl.value = null
 	file.value = 0
 	fileId.value = null
+    files.value = []
 	getFiles()
 }
 
@@ -104,6 +108,7 @@ const reset = () => {
                 <v-file-input
 	                label="Drop file here"
 	                @change="fileUploaded"
+                    v-model="files"
                 />
             </v-col>
 	        <v-col cols="4">
@@ -155,10 +160,10 @@ const reset = () => {
 					        <td>{{ file.name }}</td>
 					        <td>
 						        <v-chip
-							        v-if="file.status === 'uploading'"
+							        v-if="file.status === 'created'"
 							        color="primary"
 						        >
-							        UPLOADING
+							        CREATED
 						        </v-chip>
 						        <v-chip
 							        v-else-if="file.status === 'uploaded'"

@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->id();
             $table->string('name')->nullable();
             $table->string('path')->nullable();
-            $table->string('status')->default(File::STATUS_UPLOADING);
+            $table->string('status')->default(File::STATUS_CREATED);
 
             $table->timestamps();
         });

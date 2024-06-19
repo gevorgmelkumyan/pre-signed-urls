@@ -10,4 +10,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/files', [Controller::class, 'getFiles']);
 Route::get('/presigned-url', [Controller::class, 'generatePreSignedUrl']);
-Route::put('/files/{file}/uploaded', [Controller::class, 'fileUploaded']);
+Route::put('/files/{file}/update-file-status', [Controller::class, 'updateFileStatus']);
